@@ -16,11 +16,11 @@ It also exposes `POST /api/payments` to process a payment synchronously over HTT
 
 ## Tech stack
 
-C# · .NET 6 · ASP.NET Core · RabbitMQ.Client · BackgroundService · Swagger
+C# · .NET 8 · ASP.NET Core · RabbitMQ.Client · BackgroundService · Swagger
 
 ## Running locally
 
-Requirements: .NET 6 SDK and RabbitMQ on `localhost:5672` (guest/guest). The `docker-compose.yml` in the DevFreela repo starts one.
+Requirements: .NET 8 SDK and RabbitMQ on `localhost:5672` (guest/guest). The `docker-compose.yml` in the DevFreela repo starts one.
 
 ```sh
 dotnet run --project DevFreela.Payments.Api
