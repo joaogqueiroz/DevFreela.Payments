@@ -18,7 +18,7 @@ namespace DevFreela.Payments.Api.Consumers
         private readonly IModel _channel;
         private readonly IServiceProvider _serviceProvider;
         private const string QUEUE_NAME = "Payments";
-        private const string PAYMENT_APPROVED_QUEUE = "PaymentsApproved";
+        private const string PAYMENT_APPROVED_QUEUE = "PaymentApproved";
 
         public ProcessPaymentConsumer(IServiceProvider serviceProvider)
         {
