@@ -20,7 +20,7 @@ C# · .NET 8 · ASP.NET Core · RabbitMQ.Client · BackgroundService · Swagger
 
 ## Running locally
 
-Requirements: .NET 8 SDK and RabbitMQ on `localhost:5672` (guest/guest). The `docker-compose.yml` in the DevFreela repo starts one.
+Requirements: .NET 8 SDK and RabbitMQ. The connection is set in the `RabbitMQ` section of `appsettings.json` (default `localhost:5672`, guest/guest). The `docker-compose.yml` in the DevFreela repo starts one.
 
 ```sh
 dotnet run --project DevFreela.Payments.Api

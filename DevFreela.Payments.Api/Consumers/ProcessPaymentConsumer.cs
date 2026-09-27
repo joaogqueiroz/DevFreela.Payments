@@ -1,5 +1,6 @@
 using DevFreela.Payments.Api.Models;
 using DevFreela.Payments.Api.Service;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
@@ -20,17 +21,18 @@ namespace DevFreela.Payments.Api.Consumers
         private const string QUEUE_NAME = "Payments";
         private const string PAYMENT_APPROVED_QUEUE = "PaymentApproved";
 
-        public ProcessPaymentConsumer(IServiceProvider serviceProvider)
+        public ProcessPaymentConsumer(IServiceProvider serviceProvider, IConfiguration configuration)
         {
             _serviceProvider = serviceProvider;
 
+            var rabbitMq = configuration.GetSection("RabbitMQ");
             var _factory = new ConnectionFactory
-            {              
-                HostName = "localhost",
-                Port = 5672,
+            {
+                HostName = rabbitMq["HostName"],
+                Port = rabbitMq.GetValue<int>("Port"),
+                UserName = rabbitMq["UserName"],
+                Password = rabbitMq["Password"]
             };
-            _factory.UserName = "guest";
-            _factory.Password = "guest";
             _connection = _factory.CreateConnection();
             _channel = _connection.CreateModel();
             _channel.QueueDeclare(
