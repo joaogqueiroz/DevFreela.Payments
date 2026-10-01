@@ -1,5 +1,7 @@
 # DevFreela.Payments
 
+[![CI](https://github.com/joaogqueiroz/DevFreela.Payments/actions/workflows/ci.yml/badge.svg)](https://github.com/joaogqueiroz/DevFreela.Payments/actions/workflows/ci.yml)
+
 The payment microservice for [DevFreela](https://github.com/joaogqueiroz/DevFreela). It was split out of the DevFreela monolith to explore service decomposition and asynchronous communication with RabbitMQ.
 
 ## How it works
