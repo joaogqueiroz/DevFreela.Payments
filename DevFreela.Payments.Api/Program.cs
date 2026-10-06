@@ -27,3 +27,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+// Lets WebApplicationFactory<Program> in DevFreela.Payments.Tests start the API
+public partial class Program { }

@@ -8,7 +8,7 @@ The payment microservice for [DevFreela](https://github.com/joaogqueiroz/DevFree
 
 1. When a client finishes a project, the DevFreela API publishes the payment details (project id, card data, amount) to the `Payments` queue.
 2. `ProcessPaymentConsumer`, a hosted background service here, consumes the message and runs it through `PaymentService`. The payment gateway is simulated and always approves.
-3. The service publishes a payment-approved integration event with the project id, which DevFreela consumes to mark the project as finished.
+3. Only when the payment is approved does the service publish a payment-approved integration event with the project id, which DevFreela consumes to mark the project as finished. A refused payment or an unreadable message is acknowledged and dropped without an approval.
 
 ```
 DevFreela.Api ──(Payments)──▶ DevFreela.Payments ──(payment approved)──▶ DevFreela.Api
@@ -29,3 +29,11 @@ dotnet run --project DevFreela.Payments.Api
 ```
 
 It listens on `https://localhost:6001`, the address DevFreela expects in `Services:Payments`.
+
+## Tests
+
+```sh
+dotnet test
+```
+
+`DevFreela.Payments.Tests` (xUnit, Moq) checks that a payment request leads to an approval only when the gateway approves it, and that malformed messages are dropped. Integration tests start the API with `WebApplicationFactory` against RabbitMQ in a container ([Testcontainers](https://dotnet.testcontainers.org/), Docker required) and go through the queues the way DevFreela does: a request on `Payments` produces `PaymentApproved` for the same project, a refused payment produces nothing, and a bad message does not stop the consumer.
