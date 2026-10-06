@@ -37,5 +37,14 @@ namespace DevFreela.Payments.Tests
             var approval = Assert.Single(approvals);
             Assert.Equal(42, JsonDocument.Parse(approval).RootElement.GetProperty("IdProject").GetInt32());
         }
+
+        [Fact]
+        public async Task ExpiredCard_IsNotApproved()
+        {
+            _factory.PublishPayment(
+                @"{""IdProject"":44,""CreditCardNumber"":""4111111111111111"",""Cvv"":""123"",""ExpiresAt"":""01/20"",""FullName"":""Client"",""Amount"":1500}");
+
+            Assert.Empty(await _factory.ApprovalsWithin(Wait));
+        }
     }
 }

@@ -3,6 +3,7 @@ using DevFreela.Payments.Api.Consumers;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddHostedService<ProcessPaymentConsumer>();
 
