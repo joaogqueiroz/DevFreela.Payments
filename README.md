@@ -10,11 +10,19 @@ The payment microservice for [DevFreela](https://github.com/joaogqueiroz/DevFree
 2. `ProcessPaymentConsumer`, a hosted background service here, consumes the message and runs it through `PaymentService`. The payment gateway is simulated: nothing is charged, but it refuses what a real one would refuse (amount not above zero, a card number that is not 13–19 digits or fails the Luhn check, a CVV that is not 3–4 digits, an expiry that is not `MM/yy` or has passed).
 3. Only when the payment is approved does the service publish a payment-approved integration event with the project id, which DevFreela consumes to mark the project as finished. A refused payment or an unreadable message is acknowledged and dropped without an approval.
 
-```
-DevFreela.Api ──(Payments)──▶ DevFreela.Payments ──(payment approved)──▶ DevFreela.Api
+```mermaid
+flowchart TB
+    devfreela(["DevFreela.Api"]) -- "payment request" --> paymentsq[["RabbitMQ: Payments"]]
+    paymentsq --> consumer["ProcessPaymentConsumer<br/>background service"]
+    consumer --> handler{"PaymentMessageHandler<br/>message readable?"}
+    handler -- "no" --> dropped["acknowledged and dropped"]
+    handler -- "yes" --> service{"PaymentService<br/>amount, card number (Luhn),<br/>CVV and expiry valid?"}
+    service -- "yes" --> approvedq[["RabbitMQ: PaymentApproved<br/>(project id)"]]
+    service -- "no" --> refused["acknowledged,<br/>nothing published"]
+    approvedq --> back(["DevFreela.Api<br/>sets the project to Finished"])
 ```
 
-It also exposes `POST /api/payments` to process a payment synchronously over HTTP: `204` when approved, `400` when refused.
+It also exposes `POST /api/payments`, which runs the same `PaymentService` checks synchronously over HTTP without publishing anything: `204` when approved, `400` when refused.
 
 ## Tech stack
 
